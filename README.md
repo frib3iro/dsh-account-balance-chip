@@ -49,6 +49,12 @@ O plugin é um *bundle* de cliente: um `package.json` com a seção `dsh`, um pa
 - Depende do plugin de conta do DSH estar montado (`remote.account`); sem ele o chip não ativa.
 - O saldo só muda depois que o consumo do turno é cobrado, então o número pode levar alguns segundos além do fim da resposta.
 
+## Solução de problemas
+
+- **O chip não aparece** — confira se a linha “Saldo da conta” está habilitada em **Configurações → Plugins** e recarregue a interface. No DSH Desktop do Windows o menu do app não tem “Reload” e `Ctrl+R`/`F5` não funcionam: use **F12**, aba **Console**, e rode `location.reload()` — ou o botão **“Tente esta página novamente”** no aviso de plug-ins.
+- **`loaded without registering "dsh-account-balance-chip" via __ModuleLoader__.load`** — o Host ainda está servindo em memória uma cópia antiga do bundle, o que acontece depois de renomear o pacote ou reinstalar a mesma versão. Toque o arquivo `client.js` (basta salvar de novo) para o Host republicar e recarregue a página.
+- **`Saldo —` esmaecido** — a leitura da conta falhou (conta desconectada ou Platform indisponível); o chip volta sozinho na próxima leitura bem-sucedida.
+
 ## Desenvolvimento
 
 ```
@@ -113,6 +119,12 @@ The plugin is a client bundle: a `package.json` with a `dsh` section, a patch th
 - It shows **one** wallet (USD when present, else the first). The Account page lists them all.
 - It needs the DSH account plugin (`remote.account`); without it the chip stays inactive.
 - The balance only moves after the turn's usage is billed, so the number can trail the end of a reply by a few seconds.
+
+## Troubleshooting
+
+- **The chip is missing** — check that the “Saldo da conta” row is enabled under **Settings → Plugins**, then reload the UI. On DSH Desktop for Windows the app menu has no “Reload” and `Ctrl+R`/`F5` do nothing: press **F12**, open the **Console** and run `location.reload()` — or click **“Try this page again”** in the plugin-sync notice.
+- **`loaded without registering "dsh-account-balance-chip" via __ModuleLoader__.load`** — the Host is still serving an old in-memory copy of the bundle, which happens after renaming the package or reinstalling the same version. Touch `client.js` (save it again) so the Host republishes it, then reload the page.
+- **Dimmed `Balance —`** — the account read failed (signed out, or the Platform is unreachable); the chip recovers on the next successful read.
 
 ## Licence
 
