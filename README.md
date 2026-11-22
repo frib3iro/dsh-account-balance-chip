@@ -2,9 +2,7 @@
 
 Um chip de saldo para o [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness): mostra o **saldo da conta conectada** no fim da linha de estatísticas do compositor — a mesma linha que já mostra tokens, cache e o medidor de contexto.
 
-```
-17.5M tok · Acertos no cache: 99%   ◔ 25%   ⊙ Saldo $3.62
-```
+![Linha de estatísticas do compositor com o chip de saldo no fim](docs/preview.pt.png)
 
 Plugin de comunidade, independente: não é oficial, não tem relação com a DeepSeek e não compartilha código com outros plugins de saldo.
 
@@ -73,9 +71,7 @@ Sem build: editar `client.js` e recarregar a janela já mostra o resultado (a me
 
 A balance chip for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness): shows the **signed-in account balance** at the end of the composer stats row — the line that already reports tokens, cache hits and the context meter.
 
-```
-17.5M tok · Cache hits: 99%   ◔ 25%   ⊙ Balance $3.62
-```
+![Composer stats row with the balance chip at the end](docs/preview.en.png)
 
 Unofficial community plugin: not affiliated with DeepSeek, and sharing no code with other balance plugins.
 
