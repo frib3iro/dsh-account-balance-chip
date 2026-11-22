@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36" role="img" aria-label="Account balance">
+  <circle cx="18" cy="18" r="11" fill="none" stroke="#5B7CD8" stroke-width="2.6"/>
+  <circle cx="18" cy="18" r="3.6" fill="#5B7CD8"/>
+  <path d="M24.2 25.4A9 9 0 0 0 27 18" fill="none" stroke="#8FA6E8" stroke-width="2.2" stroke-linecap="round"/>
+</svg>

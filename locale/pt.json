@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Saldo da conta",
+    "description": "Mostra o saldo reabastecido da conta na linha de estatísticas do compositor, ao lado dos números de turnos, etapas, tokens e cache. Lê o mesmo saldo da tela Configurações → Conta e relê no máximo uma vez por minuto, e novamente sempre que esta janela volta a ficar em primeiro plano, então o valor acompanha o uso sem nenhuma ação sua. Nada é gravado em disco, e o indicador fica oculto enquanto você não estiver conectado ou antes de o primeiro saldo chegar. Passe o mouse para ver os saldos de bônus concedidos."
+  }
+}

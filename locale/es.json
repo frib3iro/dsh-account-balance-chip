@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Saldo de la cuenta",
+    "description": "Muestra el saldo recargado de la cuenta en la fila de estadísticas del compositor, junto a las cifras de turnos, pasos, tokens y caché. Lee el mismo saldo que Configuración → Cuenta y lo vuelve a leer como máximo una vez por minuto, y de nuevo cada vez que esta ventana recupera el foco, así que la cifra sigue tu uso sin que hagas nada. No guarda nada en disco, y el indicador queda oculto mientras no hay sesión iniciada o antes de recibir el primer saldo. Pasa el cursor por encima para ver los saldos de bono otorgados."
+  }
+}

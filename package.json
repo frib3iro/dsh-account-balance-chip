@@ -1,0 +1,32 @@
+{
+  "name": "dsh-account-balance-chip",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Shows the signed-in DeepSeek account balance at the end of the composer stats row.",
+  "license": "MIT",
+  "author": "Fabio Ribeiro (https://github.com/frib3iro)",
+  "homepage": "https://github.com/frib3iro/dsh-account-balance-chip#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frib3iro/dsh-account-balance-chip.git"
+  },
+  "bugs": { "url": "https://github.com/frib3iro/dsh-account-balance-chip/issues" },
+  "keywords": ["dsh", "dsh-plugin", "deepseek-harness", "cordis", "balance", "account", "composer"],
+  "engines": { "dsh": ">=0.2.2-rc.5" },
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": ["index.js", "client.js", "cordis.patch.yml", "locale/*.json", "README.md", "LICENSE", "icon.svg"],
+  "dsh": {
+    "bundle": { "patch": "./cordis.patch.yml" },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": ["@deepseek-ai/dsh-client-ui-conversation"]
+    }
+  }
+}
