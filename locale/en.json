@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Account balance chip",
-    "description": "Shows the topped-up account balance in the composer stats row, beside the turn, step, token, and cache figures. It reads the same wallet balance as Settings → Account and re-reads it at most once a minute, and again whenever this window regains focus, so the number follows your usage without any action. Nothing is cached to disk, and the chip stays hidden while you are signed out or before the first balance arrives. Hover it to see granted bonus wallets."
+    "description": "Shows the topped-up account balance in the composer stats row, beside the turn, step, token, and cache figures. It reads the same wallet balance as Settings → Account and re-reads it at most once a minute, and again whenever this window regains focus, so the number follows your usage without any action. Nothing is cached to disk, and the chip stays hidden while you are signed out or before the first balance arrives. Hover it to see granted bonus wallets. Click the amount to open the top-up page."
   }
 }

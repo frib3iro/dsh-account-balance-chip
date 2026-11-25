@@ -11,6 +11,7 @@ Plugin de comunidade, independente: não é oficial, não tem relação com a De
 - Mostra o saldo **reabastecido** da carteira da sua conta, com o mesmo formato da tela **Configurações → Conta** (`$3.62`, `$1,234.50`, `<$0.01`).
 - Fica no **fim** da linha de estatísticas, depois da porcentagem de contexto, com a mesma fonte, tamanho e cor dos números vizinhos.
 - Passar o mouse mostra o saldo reabastecido e os bônus concedidos.
+- **Clicar abre a página de recarga** (*Top up*) da plataforma, a mesma do botão **Recarregar** em Configurações → Conta.
 - Atualiza sozinho: ao abrir, no máximo **1 vez por minuto**, e na hora em que a janela volta ao foco (com piso de 15 s entre leituras).
 
 ## Estados
@@ -46,6 +47,7 @@ O plugin é um *bundle* de cliente: um `package.json` com a seção `dsh`, um pa
 - Mostra **uma** carteira (USD quando existir; senão a primeira). A tela de Conta lista todas.
 - Depende do plugin de conta do DSH estar montado (`remote.account`); sem ele o chip não ativa.
 - O saldo só muda depois que o consumo do turno é cobrado, então o número pode levar alguns segundos além do fim da resposta.
+- A recarga abre no **navegador padrão**; a janela embutida do desktop (a que aparece em Configurações → Conta) não é exposta para plugins.
 
 ## Solução de problemas
 
@@ -80,6 +82,7 @@ Unofficial community plugin: not affiliated with DeepSeek, and sharing no code w
 - Shows the **topped-up** wallet balance, formatted like **Settings → Account** (`$3.62`, `$1,234.50`, `<$0.01`).
 - Sits at the **end** of the stats row, after the context percentage, with the same font, size and colour as its neighbours.
 - Hovering lists the topped-up balance and any granted bonus balance.
+- **Clicking opens the platform's top-up page** — the same destination as the **Top up** button in Settings → Account.
 - Refreshes itself: on mount, at most **once a minute**, and immediately when the window regains focus (15 s floor between reads).
 
 ## States
@@ -115,6 +118,7 @@ The plugin is a client bundle: a `package.json` with a `dsh` section, a patch th
 - It shows **one** wallet (USD when present, else the first). The Account page lists them all.
 - It needs the DSH account plugin (`remote.account`); without it the chip stays inactive.
 - The balance only moves after the turn's usage is billed, so the number can trail the end of a reply by a few seconds.
+- Top-up opens in the **default browser**; the desktop's embedded window (the one Settings → Account shows) is not exposed to plugins.
 
 ## Troubleshooting
 

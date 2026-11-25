@@ -18,6 +18,7 @@ const en = {
   bonus: 'Bonus',
   unavailable: 'Balance unavailable',
   stale: 'Last known value',
+  openTopUp: 'Click to top up',
 }
 const pt = {
   balance: 'Saldo',
@@ -25,6 +26,7 @@ const pt = {
   bonus: 'Bônus',
   unavailable: 'Saldo indisponível',
   stale: 'Último valor conhecido',
+  openTopUp: 'Clique para recarregar',
 }
 const es = {
   balance: 'Saldo',
@@ -32,6 +34,7 @@ const es = {
   bonus: 'Bono',
   unavailable: 'Saldo no disponible',
   stale: 'Último valor conocido',
+  openTopUp: 'Clic para recargar',
 }
 
 /**
@@ -222,25 +225,44 @@ window.__ModuleLoader__.load({
           fontSize: 'calc(var(--dsh-content-font-size-secondary, 13px) - 1px)',
           lineHeight: 'calc(20px + var(--dsh-content-font-delta-secondary, 0px))',
         }
-        const pillStyle = {
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: '6px',
-          boxSizing: 'border-box',
-          maxWidth: '100%',
-          padding: '1px 8px',
-          border: 'none',
-          borderRadius: 'var(--dsw-radius-sm)',
-          background: 'transparent',
-          color: 'var(--dsw-alias-label-tertiary)',
-          font: 'inherit',
-          fontVariantNumeric: 'tabular-nums',
-          lineHeight: 'inherit',
-          whiteSpace: 'nowrap',
-        }
-        const labelStyle = { minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis' }
+        // Same geometry as the shipped pills; the action variant adds the
+        // hover and focus treatment those buttons receive.
+        const CSS = [
+          '.dsh-account-balance-chip{display:inline-flex;align-items:center;gap:6px;box-sizing:border-box;max-width:100%;padding:1px 8px;border:none;border-radius:var(--dsw-radius-sm);background:transparent;color:var(--dsw-alias-label-tertiary);font:inherit;font-variant-numeric:tabular-nums;line-height:inherit;white-space:nowrap}',
+          '.dsh-account-balance-chip>svg{width:14px;height:14px;flex:none}',
+          '.dsh-account-balance-chip>.dsh-account-balance-label{min-width:0;overflow:hidden;text-overflow:ellipsis}',
+          '.dsh-account-balance-chip--action{cursor:pointer}',
+          '@media (hover:hover){.dsh-account-balance-chip--action:hover{background:var(--dsw-alias-interactive-bg-hover);color:var(--dsw-alias-label-secondary)}}',
+          '.dsh-account-balance-chip--action:focus-visible{outline:2px solid var(--dsw-alias-brand-primary);outline-offset:1px}',
+        ].join('')
+        ctx.effect(() => {
+          const style = document.createElement('style')
+          style.dataset.dshAccountBalance = ''
+          style.textContent = CSS
+          document.head.append(style)
+          return () => { style.remove() }
+        }, 'account-balance: chip styles')
 
-        /** One chip beside the usage stats. */
+        /** Platform top-up destination from the account stream; null while unknown. */
+        const topUpUrl = () => {
+          const ui = optionalService(ctx, 'accountUi')
+          if (ui === undefined || typeof ui.getSnapshot !== 'function') return null
+          let view
+          try {
+            view = ui.getSnapshot()?.view
+          } catch {
+            return null
+          }
+          const url = view?.links?.topUpUrl
+          return typeof url === 'string' && url !== '' ? url : null
+        }
+
+        /** Open the Platform top-up page the account settings page links to. */
+        const openTopUp = (url) => {
+          window.open(url, '_blank', 'noopener,noreferrer')
+        }
+
+        /** One chip beside the usage stats; clickable when a top-up address is known. */
         function BalanceChip() {
           const [current, setCurrent] = React.useState(state)
           React.useEffect(() => subscribe(() => setCurrent(state)), [])
@@ -254,7 +276,7 @@ window.__ModuleLoader__.load({
               'aria-label': t('unavailable'),
               'data-account-balance': 'unavailable',
               style: { ...anchorStyle, opacity: 0.7 },
-            }, h('span', { style: pillStyle }, h('span', null, `${t('balance')} \u2014`)))
+            }, h('span', { className: 'dsh-account-balance-chip' }, h('span', null, `${t('balance')} \u2014`)))
           }
           const wallet = current.wallets.find((entry) => entry.currency === 'USD') ?? current.wallets[0]
           const amount = formatAmount(wallet.balance, wallet.currency)
@@ -265,11 +287,25 @@ window.__ModuleLoader__.load({
           const lines = [`${t('toppedUp')}: ${amount}`]
           for (const { text } of bonus) lines.push(`${t('bonus')}: ${text}`)
           if (dimmed) lines.push(t('stale'))
+          const label = `${t('balance')} ${amount}`
+          const url = topUpUrl()
+          if (url !== null) lines.push(t('openTopUp'))
+          const content = h(React.Fragment, null,
+            coin(),
+            h('span', { className: 'dsh-account-balance-label' }, label))
+          const surface = url === null
+            ? h('span', { className: 'dsh-account-balance-chip' }, content)
+            : h('button', {
+              type: 'button',
+              className: 'dsh-account-balance-chip dsh-account-balance-chip--action',
+              'aria-label': `${label} \u2014 ${t('openTopUp')}`,
+              onClick: () => { openTopUp(url) },
+            }, content)
           return h('span', {
             'data-account-balance': amount,
             title: lines.join('\n'),
             style: { ...anchorStyle, opacity: dimmed ? 0.65 : 1 },
-          }, h('span', { style: pillStyle }, coin(), h('span', { style: labelStyle }, `${t('balance')} ${amount}`)))
+          }, surface)
         }
 
         ctx.slots.inject('conversation.composer.dock', () => ctx.slots.register({
