@@ -67,6 +67,8 @@ icon.svg           ícone do plugin
 
 Sem build: editar `client.js` e recarregar a janela já mostra o resultado (a metade Host vazia não precisa reiniciar o app).
 
+Tudo no `client.js` vive **dentro de `factory(require)`**: o carregador pode avaliar o script mais de uma vez no mesmo escopo global, e um `const` no topo do arquivo quebra com *“Identifier 'NS' has already been declared”* na segunda execução.
+
 ---
 
 # English

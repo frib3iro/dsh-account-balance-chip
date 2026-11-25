@@ -6,83 +6,88 @@
  * through the existing `account/getBalance` Remote of the account settings
  * plugin. Nothing is stored or sent anywhere else: the chip only re-reads the
  * same balance the Settings > Account page shows.
+ *
+ * Every binding lives inside the factory: the module loader may evaluate this
+ * script more than once in one global scope, so a top-level `const` would throw
+ * "Identifier has already been declared" on the second run.
  */
-
-const NS = 'accountBalance'
-const POLL_MS = 60_000
-const MIN_GAP_MS = 15_000
-
-const en = {
-  balance: 'Balance',
-  toppedUp: 'Topped-up',
-  bonus: 'Bonus',
-  unavailable: 'Balance unavailable',
-  stale: 'Last known value',
-  openTopUp: 'Click to top up',
-}
-const pt = {
-  balance: 'Saldo',
-  toppedUp: 'Saldo reabastecido',
-  bonus: 'Bônus',
-  unavailable: 'Saldo indisponível',
-  stale: 'Último valor conhecido',
-  openTopUp: 'Clique para recarregar',
-}
-const es = {
-  balance: 'Saldo',
-  toppedUp: 'Saldo recargado',
-  bonus: 'Bono',
-  unavailable: 'Saldo no disponible',
-  stale: 'Último valor conocido',
-  openTopUp: 'Clic para recargar',
-}
-
-/**
- * Format one wallet amount the way Settings > Account does: two decimals,
- * grouped digits, a sub-cent marker, and the currency symbol. Work is done on
- * the decimal string in integer cents so a value like `0.29` keeps its cents.
- * @param {string} amount - decimal balance string from the Host.
- * @param {string} currency - `USD` or `CNY`.
- * @returns {string | null} display text, or null when the amount is unusable.
- */
-function formatAmount(amount, currency) {
-  const match = /^(-?)(\d+)(?:\.(\d+))?$/.exec(String(amount ?? '').trim())
-  if (match === null) return null
-  const negative = match[1] === '-'
-  const digits = match[3] ?? ''
-  const fraction = digits.padEnd(2, '0').slice(0, 2)
-  const subCent = /[1-9]/.test(digits.slice(2))
-  let cents
-  try {
-    cents = BigInt(match[2]) * 100n + BigInt(fraction)
-  } catch {
-    return null
-  }
-  const symbol = currency === 'CNY' ? '¥' : '$'
-  if (cents === 0n) {
-    // Truncation to cents leaves only an exact zero or a sub-cent amount.
-    if (!subCent) return `${symbol}0.00`
-    return `${negative ? '-' : '<'}${symbol}0.01`
-  }
-  const grouped = String(cents / 100n).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-  const rest = String(cents % 100n).padStart(2, '0')
-  return `${negative ? '-' : ''}${symbol}${grouped}.${rest}`
-}
-
-/** Resolve a service without turning a missing provider into a failed plugin. */
-function optionalService(ctx, name) {
-  try {
-    return ctx.get(name)
-  } catch {
-    return undefined
-  }
-}
 
 window.__ModuleLoader__.load({
   id: 'dsh-account-balance-chip',
   factory(require) {
     const React = require('react')
     const h = React.createElement
+
+    const NS = 'accountBalance'
+    const POLL_MS = 60_000
+    const MIN_GAP_MS = 15_000
+
+    const en = {
+      balance: 'Balance',
+      toppedUp: 'Topped-up',
+      bonus: 'Bonus',
+      unavailable: 'Balance unavailable',
+      stale: 'Last known value',
+      openTopUp: 'Click to top up',
+    }
+    const pt = {
+      balance: 'Saldo',
+      toppedUp: 'Saldo reabastecido',
+      bonus: 'Bônus',
+      unavailable: 'Saldo indisponível',
+      stale: 'Último valor conhecido',
+      openTopUp: 'Clique para recarregar',
+    }
+    const es = {
+      balance: 'Saldo',
+      toppedUp: 'Saldo recargado',
+      bonus: 'Bono',
+      unavailable: 'Saldo no disponible',
+      stale: 'Último valor conocido',
+      openTopUp: 'Clic para recargar',
+    }
+
+    /**
+     * Format one wallet amount the way Settings > Account does: two decimals,
+     * grouped digits, a sub-cent marker, and the currency symbol. Work is done
+     * on the decimal string in integer cents so a value like `0.29` keeps its
+     * cents.
+     * @param {string} amount - decimal balance string from the Host.
+     * @param {string} currency - `USD` or `CNY`.
+     * @returns {string | null} display text, or null when the amount is unusable.
+     */
+    function formatAmount(amount, currency) {
+      const match = /^(-?)(\d+)(?:\.(\d+))?$/.exec(String(amount ?? '').trim())
+      if (match === null) return null
+      const negative = match[1] === '-'
+      const digits = match[3] ?? ''
+      const fraction = digits.padEnd(2, '0').slice(0, 2)
+      const subCent = /[1-9]/.test(digits.slice(2))
+      let cents
+      try {
+        cents = BigInt(match[2]) * 100n + BigInt(fraction)
+      } catch {
+        return null
+      }
+      const symbol = currency === 'CNY' ? '¥' : '$'
+      if (cents === 0n) {
+        // Truncation to cents leaves only an exact zero or a sub-cent amount.
+        if (!subCent) return `${symbol}0.00`
+        return `${negative ? '-' : '<'}${symbol}0.01`
+      }
+      const grouped = String(cents / 100n).replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      const rest = String(cents % 100n).padStart(2, '0')
+      return `${negative ? '-' : ''}${symbol}${grouped}.${rest}`
+    }
+
+    /** Resolve a service without turning a missing provider into a failed plugin. */
+    function optionalService(ctx, name) {
+      try {
+        return ctx.get(name)
+      } catch {
+        return undefined
+      }
+    }
 
     return {
       inject: ['slots', 'locale', 'remote', 'remote.account'],
